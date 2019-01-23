@@ -1,6 +1,6 @@
 Store and retrieve EDN data in AWS SSM Paramstore
 
-Why SSM Parameter Store ?
+*Why SSM Parameter Store ?*
 AWS Systems Manager Parameter Store provides secure, hierarchical
 storage for configuration data. It is a great alternative to Consul or
 Vault for storing service configuration. Think of it as a managed
@@ -9,7 +9,7 @@ Config store in the AWS cloud.
 *ednism* provides simple APIs (get, put, history and delete) to store
 and retrieve EDN data in paramstore
 
-*ednism* also caches `get` and invalidates the cache on `put`
+*ednism* also caches =get= and invalidates the cache on =put=
 
 * Usage
 
