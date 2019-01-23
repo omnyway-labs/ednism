@@ -1,0 +1,21 @@
+A Clojure Library to store and retrieve EDN data in AWS SSM Paramstore
+
+* Usage
+
+#+BEGIN_SRC clojure
+(require '[ednism.core :as e])
+(e/login {:provider :profile
+          :profile (System/getenv "AWS_PROFILE")
+          :region  "us-east-1"})
+
+(e/put "ssm:/my/config/namespace"
+       {:a 1
+        :b "string"
+        :c true
+        :e ["a" "b" "c"]
+        :d :keyword})
+
+(e/get "ssm:/my/config/namespace")
+;; returns the above map in put
+
+#+END_SRC
