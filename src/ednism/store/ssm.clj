@@ -117,16 +117,24 @@
   ([name]
    (->> (doto (GetParameterHistoryRequest.)
           (.withName name)
-          (.withDecryption true))
+          (.withWithDecryption true))
         (.getParameterHistory @client)
         (as-history)))
   ([name token]
    (->> (doto (GetParameterHistoryRequest.)
           (.withName name)
-          (.withDecryption true)
+          (.withWithDecryption true)
           (.withToken token))
         (.getParameterHistory @client)
         (as-history))))
+
+(defn- get-history* [path]
+  (loop [{:keys [next-token parameters]} (history* path)
+         acc  []]
+   (if-not next-token
+      (conj acc parameters)
+      (recur (history* path next-token)
+             (conj acc parameters)))))
 
 (defn- as-key [path]
   (-> path
@@ -169,7 +177,7 @@
 
 (defmethod history :ssm [path]
   (->> (as-path path)
-       (history*)
+       (get-history*)
        (apply concat)))
 
 (defmethod keys :ssm [root]
