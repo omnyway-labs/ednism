@@ -20,7 +20,7 @@
       (read-edn-file)))
 
 (defmethod put :file [path cfg]
-  :nop)
+  (spit path cfg))
 
 (defmethod put-kv :file [_ _ _]
   :nop)

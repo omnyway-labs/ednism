@@ -5,8 +5,10 @@
    [ednism.core :as e]))
 
 (deftest file-store-test
-  (is (= 2 2)))
-
+  (is (= {:a 1}
+         (do
+           (e/put "file:/tmp/foo" {:a 1})
+           (e/get "file:/tmp/foo")))))
 
 (defn setup []
   (e/init! (merge (saw/session)
