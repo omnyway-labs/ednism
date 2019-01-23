@@ -15,7 +15,7 @@ and retrieve EDN data in paramstore
 
 #+BEGIN_SRC clojure
 (require '[ednism.core :as e])
-(e/login {:provider :profile
+(e/init! {:provider :profile
           :profile (System/getenv "AWS_PROFILE")
           :region  "us-east-1"})
 
