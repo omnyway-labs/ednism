@@ -152,7 +152,6 @@
              [(as-key name) (as-value value)])))
 
 (defmethod put-kv :ssm [k v]
-  (prn k v)
   (put-kv* k v true))
 
 (defmethod put :ssm [path cfg]
@@ -160,7 +159,6 @@
     (let [path     (as-path path)
           key-path (str path "/" (name k))]
       (rate-limit!)
-      (prn {:config.put {:key key-path :val v}})
       (put-kv* key-path (pr-str v) true))))
 
 (defmethod get :ssm [path]
