@@ -9,4 +9,5 @@
   (get @C k))
 
 (defn invalidate! [k]
-  (swap! C dissoc k))
+  (swap! C dissoc k)
+  :ok)
