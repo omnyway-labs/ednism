@@ -18,7 +18,9 @@
     (store/get path)))
 
 (defn history [path]
-  (store/history path))
+  (->> (store/history path)
+       (sort-by :version)
+       (reverse)))
 
 (defn keys [path]
   (store/keys path))

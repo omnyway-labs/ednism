@@ -29,4 +29,8 @@
     (is (= cfg
            (put-get :test cfg)))
     (is (= 1 (put-get :kv 1)))
+    (is (= 1
+           (-> (e/history "ssm:/ednism/kv")
+               first
+               :version)))
     (is (= :ok  (e/delete "ssm:/ednism")))))
