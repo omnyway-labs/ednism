@@ -29,6 +29,9 @@ and retrieve EDN data in paramstore
 (e/get "ssm:/my/config/namespace")
 ;; returns the above map in put
 
+(e/get "/my/config/namespace" :cache? false)
+;; ignores cache and looks up the store
+
 (e/history "ssm:/my/config/namespace")
 
 (e/delete "ssm:/my/config/namespace")
