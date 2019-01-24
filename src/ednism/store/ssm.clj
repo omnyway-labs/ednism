@@ -3,6 +3,7 @@
   (:require
    [clojure.string :as str]
    [saw.core :as saw]
+   [saw.util :refer [error-as-value]]
    [ednism.store.core :refer :all])
   (:import
    (com.amazonaws.services.simplesystemsmanagement
@@ -38,12 +39,6 @@
 
 (defn path? [name]
   (str/starts-with? name "/"))
-
-(defn as-parameter-type [type]
-  (condp = type
-    :string        (ParameterType/valueOf "String")
-    :string-list   (ParameterType/valueOf "StringList")
-    :secure-string (ParameterType/valueOf "SecureString")))
 
 (defn as-type [parameter-type]
   (condp = parameter-type
@@ -81,13 +76,22 @@
        (.putParameter @client)
        (.getVersion)))
 
+(defn get-kv* [name]
+  (error-as-value
+   (->> (doto (GetParameterRequest.)
+          (.withName name)
+          (.withWithDecryption true))
+        (.getParameter @client)
+        (.getParameter)
+        (.getValue))))
+
 (defn- get-by-path*
   ([path]
    (->> (doto (GetParametersByPathRequest.)
-         (.withPath path)
-         (.withMaxResults (int 10))
-         (.withRecursive  true)
-         (.withWithDecryption true))
+          (.withPath path)
+          (.withMaxResults (int 10))
+          (.withRecursive  true)
+          (.withWithDecryption true))
         (.getParametersByPath @client)
         (as-parameters)))
   ([path token]
@@ -109,9 +113,10 @@
              (conj acc parameters)))))
 
 (defn delete* [name]
-  (->> (doto (DeleteParameterRequest.)
-         (.withName name))
-       (.deleteParameter @client)))
+  (error-as-value
+   (->> (doto (DeleteParameterRequest.)
+          (.withName name))
+        (.deleteParameter @client))))
 
 (defn history*
   ([name]
@@ -155,25 +160,31 @@
       (map? v)    v
       :else       v)))
 
-(defn- parse-response [res]
-  (into {} (for [{:keys [name value]} res]
-             [(as-key name) (as-value value)])))
+(defn maybe-empty? [m]
+  (when-not (empty? m) m))
 
-(defmethod put-kv :ssm [k v]
-  (put-kv* k v true))
+(defn- parse-response [res]
+  (->> (map (fn [{:keys [name value]}]
+              {(as-key name) (as-value value)}) res)
+       (into {})
+       (maybe-empty?)))
 
 (defmethod put :ssm [path cfg]
-  (doseq [[k v] cfg]
-    (let [path     (as-path path)
-          key-path (str path "/" (name k))]
-      (rate-limit!)
-      (put-kv* key-path (pr-str v) true))))
+  (let [path (as-path path)]
+    (if (map? cfg)
+      (doseq [[k v] cfg]
+        (-> (str path "/" (name k))
+            (put-kv* (pr-str v) true))
+        (rate-limit!))
+      (put-kv* path (pr-str cfg) true))))
 
 (defmethod get :ssm [path]
-  (->> (as-path path)
-       (get-by-path)
-       (apply concat)
-       (parse-response)))
+  (let [path (as-path path)]
+    (or (->> (get-by-path path)
+             (apply concat)
+             (parse-response))
+        (->> (get-kv* path)
+             (as-value)))))
 
 (defmethod history :ssm [path]
   (->> (as-path path)

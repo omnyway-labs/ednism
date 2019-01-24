@@ -20,8 +20,6 @@
           (second))
       f))
 
-(defmulti put-kv (fn [path value] (scheme-of path)))
-
 (defmulti put (fn [path cfg-map] (scheme-of path)))
 
 (defmulti get (fn [path] (scheme-of path)))

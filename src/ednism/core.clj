@@ -8,9 +8,6 @@
    [ednism.store.ssm :as ssm]
    [ednism.cache :as cache]))
 
-(defn put-kv [k v]
-  (store/put-kv k v))
-
 (defn put [path m]
   (store/put path m)
   (cache/invalidate! path))
@@ -27,7 +24,8 @@
   (store/keys path))
 
 (defn delete [path]
-  (store/delete path))
+  (store/delete path)
+  (cache/invalidate! path))
 
 (defn init! [config]
   (ssm/init! config))
