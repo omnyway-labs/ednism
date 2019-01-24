@@ -21,6 +21,3 @@
 
 (defmethod put :file [path cfg]
   (spit path cfg))
-
-(defmethod put-kv :file [_ _ _]
-  :nop)

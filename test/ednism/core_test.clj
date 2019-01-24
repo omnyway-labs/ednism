@@ -27,4 +27,6 @@
              :e ["a" "b" "c"]
              :d :keyword}]
     (is (= cfg
-           (put-get :test cfg)))))
+           (put-get :test cfg)))
+    (is (= 1 (put-get :kv 1)))
+    (is (= :ok  (e/delete "ssm:/ednism")))))
