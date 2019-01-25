@@ -29,5 +29,9 @@
   (store/delete path)
   (cache/invalidate! path))
 
+(defn path? [thing]
+  (or (str/starts-with? (name thing) "/")
+      (.contains (name thing) ":")))
+
 (defn init! [config]
   (ssm/init! config))
