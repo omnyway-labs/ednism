@@ -129,7 +129,7 @@
    (->> (doto (GetParameterHistoryRequest.)
           (.withName name)
           (.withWithDecryption true)
-          (.withToken token))
+          (.withNextToken token))
         (.getParameterHistory @client)
         (as-history))))
 
