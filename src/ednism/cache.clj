@@ -11,3 +11,6 @@
 (defn invalidate! [k]
   (swap! C dissoc k)
   :ok)
+
+(defn clear! []
+  (reset! C (cache/fifo-cache-factory {})))

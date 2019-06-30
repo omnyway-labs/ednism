@@ -33,5 +33,8 @@
   (or (str/starts-with? (name thing) "/")
       (.contains (name thing) ":")))
 
+(defn clear-cache! []
+  (cache/clear!))
+
 (defn init! [config]
   (ssm/init! config))

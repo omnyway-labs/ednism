@@ -1,11 +1,11 @@
 {:deps
  {com.amazonaws/aws-java-sdk-ssm {:mvn/version "1.11.475"},
   com.google.guava/guava {:mvn/version "22.0"},
-  org.clojure/tools.reader {:mvn/version "1.3.2"}
   omnyway-labs/saw
   {:git/url "https://github.com/omnyway-labs/saw.git",
-   :sha "6f8c1f23107b3f604074e1fc1456e229ead92522",
-   :time "2019-03-05T18:28:51.000+0000",
-   :tag "0.1.17"},
+   :sha "ffd64ef09730dd953a8ca1dbc83b84e28631a7d0",
+   :time "2019-05-18T01:56:49.000+0000",
+   :tag "0.1.20"},
   org.clojure/clojure {:mvn/version "1.9.0"},
-  org.clojure/core.cache {:mvn/version "0.7.2"}}}
+  org.clojure/core.cache {:mvn/version "0.7.2"},
+  org.clojure/tools.reader {:mvn/version "1.3.2"}}}
