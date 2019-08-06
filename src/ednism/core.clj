@@ -12,10 +12,15 @@
   (store/put path m)
   (cache/invalidate! path))
 
-(defn get [path & {:keys [:cache?] :or {cache? true}}]
-  (if cache?
-    (cache/lookup! path store/get)
-    (store/get path)))
+(defn get [path & {:keys [:cache? :root?]
+                   :or {cache? true
+                        root? false}}]
+  (let [get-fn (if root?
+                 store/get*
+                 store/get)]
+    (if cache?
+      (cache/lookup! path get-fn)
+      (get-fn path))))
 
 (defn history [path]
   (->> (store/history path)

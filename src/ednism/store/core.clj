@@ -24,6 +24,8 @@
 
 (defmulti get (fn [path] (scheme-of path)))
 
+(defmulti get* (fn [path] (scheme-of path)))
+
 (defmulti delete (fn [path] (scheme-of path)))
 
 (defmulti keys (fn [path] (scheme-of path)))

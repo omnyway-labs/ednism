@@ -169,6 +169,10 @@
        (into {})
        (maybe-empty?)))
 
+(defn put-multi [xs]
+  ;;TODO: convert to string list
+  )
+
 (defmethod put :ssm [path cfg]
   (let [path (as-path path)]
     (if (map? cfg)
@@ -185,6 +189,25 @@
              (parse-response))
         (->> (get-kv* path)
              (as-value)))))
+
+(defmethod get :ssm [path]
+  (let [path (as-path path)]
+    (or (->> (get-by-path path)
+             (apply concat)
+             (parse-response))
+        (->> (get-kv* path)
+             (as-value)))))
+
+(defn concat-vals [xs]
+  (->> (map (fn [{:keys [name value]}]
+              {(as-key name) (as-value value)})
+            xs)
+       (into {})))
+
+(defmethod get* :ssm [path]
+  (let [path (as-path path)]
+    (->> (get-by-path path)
+         (map concat-vals))))
 
 (defmethod history :ssm [path]
   (->> (as-path path)
