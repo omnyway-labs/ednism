@@ -230,4 +230,5 @@
 
 (defn init! [auth]
   (saw/login auth)
-  (reset! client (make-client (:region auth))))
+  (->> (make-client (saw/region))
+       (reset! client)))
