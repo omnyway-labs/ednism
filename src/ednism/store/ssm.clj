@@ -3,7 +3,7 @@
   (:require
    [clojure.string :as str]
    [saw.core :as saw]
-   [saw.util :refer [error-as-value]]
+   [saw.error :refer [with-error]]
    [ednism.store.core :refer :all])
   (:import
    (com.amazonaws.services.simplesystemsmanagement
@@ -68,16 +68,17 @@
    :parameters (flatten (as-history* (.getParameters result)))})
 
 (defn put-kv* [name value overwrite?]
-  (->> (doto (PutParameterRequest.)
-         (.withName name)
-         (.withType "SecureString")
-         (.withValue value)
-         (.withOverwrite overwrite?))
-       (.putParameter @client)
-       (.getVersion)))
+  (with-error :ednism-ssm-error
+    (->> (doto (PutParameterRequest.)
+           (.withName name)
+           (.withType "SecureString")
+           (.withValue value)
+           (.withOverwrite overwrite?))
+         (.putParameter @client)
+         (.getVersion))))
 
 (defn get-kv* [name]
-  (error-as-value
+  (with-error :ednism-ssm-error
    (->> (doto (GetParameterRequest.)
           (.withName name)
           (.withWithDecryption true))
@@ -113,10 +114,10 @@
              (conj acc parameters)))))
 
 (defn delete* [name]
-  (error-as-value
-   (->> (doto (DeleteParameterRequest.)
-          (.withName name))
-        (.deleteParameter @client))))
+  (with-error :ednism-ssm-error
+    (->> (doto (DeleteParameterRequest.)
+           (.withName name))
+         (.deleteParameter @client))))
 
 (defn history*
   ([name]
